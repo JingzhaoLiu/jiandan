@@ -17,7 +17,7 @@ import (
 	"path/filepath"
 
 	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoSpider/util"
+	"github.com/hunterhug/GoTool/util"
 )
 
 var (

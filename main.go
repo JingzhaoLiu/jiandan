@@ -15,7 +15,7 @@ package main
 import (
 	//"fmt"
 	"flag"
-	"github.com/hunterhug/GoSpider/util"
+	"github.com/hunterhug/GoTool/util"
 	jiandan "github.com/hunterhug/jiandan/src"
 	"os"
 	"os/signal"

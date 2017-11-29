@@ -14,9 +14,9 @@ package src
 
 import (
 	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoSpider/store/myredis"
-	"github.com/hunterhug/GoSpider/store/mysql"
-	"github.com/hunterhug/GoSpider/util"
+	"github.com/hunterhug/GoTool/store/myredis"
+	"github.com/hunterhug/GoTool/store/mysql"
+	"github.com/hunterhug/GoTool/util"
 )
 
 func InitDB() {

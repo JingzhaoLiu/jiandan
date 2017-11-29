@@ -14,7 +14,7 @@ package src
 
 import (
 	"fmt"
-	"github.com/hunterhug/GoSpider/util"
+	"github.com/hunterhug/GoTool/util"
 	"path/filepath"
 	//"strings"
 	"testing"
