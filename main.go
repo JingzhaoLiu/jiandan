@@ -15,10 +15,11 @@ package main
 import (
 	//"fmt"
 	"flag"
-	"github.com/hunterhug/GoTool/util"
-	jiandan "github.com/hunterhug/jiandan/src"
 	"os"
 	"os/signal"
+
+	"github.com/hunterhug/GoTool/util"
+	jiandan "github.com/hunterhug/jiandan/src"
 )
 
 var (

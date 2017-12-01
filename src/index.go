@@ -23,7 +23,13 @@ import (
 var (
 	// 信号量
 	indexstopchan chan bool
+	maxpage       = 100000 // 预估的最大页数的两倍
+	pageSpider    *spider.Spider
 )
+
+func init() {
+	pageSpider, _ = spider.New(nil) // 预估页数的爬虫
+}
 
 // 首页启动入口，包括所有非详情页面的抓取
 // 抓取网址到redis，因为页数经常变动，所以这个爬虫比较暴力，借助文件夹功能接力，如果页面更新，请将data数据夹删除
@@ -58,10 +64,36 @@ func IndexStep() {
 	}
 
 	// 获取页数
-	e = ParseIndexNum(data)
-	if e != nil {
-		spider.Log().Panic(e.Error())
+	// e = ParseIndexNum(data)
+	// if e != nil {
+	// 	spider.Log().Panic(e.Error())
+	// }
+	pagefirst := 1      // 1
+	pagelast := maxpage // 100
+	for {
+		pagenow := (pagefirst + pagelast) / 2 // 50  1-50 50-100
+		spider.Log().Info(pagefirst, pagenow, pagelast)
+		if pagenow == pagefirst {
+			break
+		}
+
+		pageSpider.SetUrl(fmt.Sprintf("%s/page/%d", Url, pagenow))
+		result, e := pageSpider.Get()
+		if e != nil {
+			spider.Log().Panic(e.Error())
+		}
+
+		if len(ParseIndex(result)) == 0 {
+			pagelast = pagenow // 1 50
+		} else {
+			pagefirst = pagenow // 50 100
+		}
 	}
+
+	spider.Log().Info(pagefirst)
+	// os.Exit(1)
+	IndexPage = pagefirst
+
 	SentRedis(ParseIndex(data))
 }
 

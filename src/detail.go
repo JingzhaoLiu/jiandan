@@ -38,7 +38,7 @@ func DetailTaskStep(name int) {
 		// 将Todo移到Doing
 		url, e := RedisClient.Brpoplpush(RedisListTodo, RedisListDoing, 0)
 		if e != nil {
-			spider.Log().Errorf("BrpopLpush % error:%s", url, e.Error())
+			spider.Log().Errorf("BrpopLpush %s error:%s", url, e.Error())
 			break
 		}
 		// Done已经存在

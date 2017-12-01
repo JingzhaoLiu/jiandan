@@ -15,12 +15,13 @@ package src
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/hunterhug/GoSpider/spider"
 	"github.com/hunterhug/GoTool/store/myredis"
 	"github.com/hunterhug/GoTool/store/mysql"
 	"github.com/hunterhug/GoTool/util"
-	"os"
-	"path/filepath"
 )
 
 // 可抽离到配置文件中
@@ -51,6 +52,7 @@ var (
 	RedisListTodo  = "jiandantodo"
 	RedisListDoing = "jiandandoing"
 	RedisListDone  = "jiandandone"
+	IpPool         = "ipip"
 	RootDir        = ""
 
 	MysqlClient *mysql.Mysql
@@ -66,6 +68,7 @@ type configXX struct {
 	TimeOut         int                 `json:"time_out"`
 	Redis           myredis.RedisConfig `json:"redis"`
 	Mysql           mysql.MysqlConfig   `json:"mysql"`
+	Wait            int                 `json:"wait_time"`
 }
 
 // 设置全局
@@ -119,6 +122,7 @@ func Config(file string) {
 		}
 		// 设置随机UA
 		s.SetUa(spider.RandomUa())
+		s.SetWaitTime(xx.Wait) // 这里暂停方便
 		spider.Pool.Set(fmt.Sprintf("%s-%d", IndexSpiderNamePrefix, i), s)
 	}
 	for i := 0; i <= DetailSpiderNum; i++ {
@@ -127,6 +131,7 @@ func Config(file string) {
 			spider.Log().Panicf("detail spider %d new error: %s", i, e.Error())
 		}
 		s.SetUa(spider.RandomUa())
+		s.SetWaitTime(xx.Wait)
 		spider.Pool.Set(fmt.Sprintf("%s-%d", DetailSpiderNamePrefix, i), s)
 	}
 }

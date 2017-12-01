@@ -14,13 +14,17 @@ package src
 
 import (
 	"errors"
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/hunterhug/GoSpider/query"
 	"github.com/hunterhug/GoTool/util"
-	"strings"
 )
 
 // 解析页面数量
+// 此策略已经更改, 弃用!!!
 func ParseIndexNum(data []byte) error {
 	doc, e := query.QueryBytes(data)
 	if e != nil {
@@ -42,11 +46,16 @@ func ParseIndexNum(data []byte) error {
 
 // 提取信息
 func ParseIndex(data []byte) []string {
+	if strings.Contains(string(data), "too many requests") {
+		fmt.Println("速度过快, 待引入IP池, 见:ip.go")
+		os.Exit(1)
+	}
 	list := []string{}
 	doc, e := query.QueryBytes(data)
 	if e != nil {
 		return list
 	}
+
 	doc.Find(".post").Each(func(num int, node *goquery.Selection) {
 		//title := node.Find("h2").Text()
 		//if title == "" {
@@ -88,9 +97,9 @@ func ParseDetail(data []byte) map[string]string {
 		result = result + "<p>" + temp + "</p>"
 	})
 
-	returnmap["title"] = strings.Replace(title,"\"","'",-1)
-	returnmap["tags"] = strings.Replace(tags,"\"","'",-1)
-	returnmap["shortcontent"] = strings.Replace(shortcontent,"\"","'",-1)
-	returnmap["content"] = strings.Replace(result,"\"","'",-1)
+	returnmap["title"] = strings.Replace(title, "\"", "'", -1)
+	returnmap["tags"] = strings.Replace(tags, "\"", "'", -1)
+	returnmap["shortcontent"] = strings.Replace(shortcontent, "\"", "'", -1)
+	returnmap["content"] = strings.Replace(result, "\"", "'", -1)
 	return returnmap
 }

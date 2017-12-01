@@ -59,6 +59,9 @@ func InitDB() {
 }
 
 func SentRedis(urls []string) {
+	if len(urls) == 0 {
+		return
+	}
 	var interfaceSlice []interface{} = make([]interface{}, len(urls))
 	for i, d := range urls {
 		interfaceSlice[i] = d

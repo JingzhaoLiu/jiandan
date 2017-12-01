@@ -19,13 +19,13 @@
 		},
 		{
 			"ImportPath": "github.com/hunterhug/GoSpider/query",
-			"Comment": "v2.0",
-			"Rev": "aa2a2fab5564d71dd08eb757ef0ba8a5fc00a504"
+			"Comment": "v2.1",
+			"Rev": "417db0048b4273e235ac5312a1487300b97679b4"
 		},
 		{
 			"ImportPath": "github.com/hunterhug/GoSpider/spider",
-			"Comment": "v2.0",
-			"Rev": "aa2a2fab5564d71dd08eb757ef0ba8a5fc00a504"
+			"Comment": "v2.1",
+			"Rev": "417db0048b4273e235ac5312a1487300b97679b4"
 		},
 		{
 			"ImportPath": "github.com/hunterhug/GoTool/store",

@@ -1,14 +1,19 @@
 # 煎蛋分布式文章爬虫
 
+## 更新
+
+20171201
+
+1. 煎蛋首页不再可以获取页数! 尝试评估数量
+2. 可能出现:{"code":40380007, "msg":"too many requests"}, 需引入代理IP池, 待切换, todo!!
+
 ## 萌萌介绍
 
 多浏览器持久化cookie分布式爬虫爬取数据,使用到redis,mysql,将网页数据保存在磁盘中,详情页解析后存入数据库。
 
 爬虫工程师进阶必备!高级示例！依赖核心库：[土拔鼠Golang爬虫包](https://github.com/hunterhug/GoSpider)
 
-环境安装请查看：[个人博客](http://www.lenggirl.com/tool/gospider-env.html)
-
-本项目使用docker方式：[https://github.com/hunterhug/GoSpider-docker](https://github.com/hunterhug/GoSpider-docker)
+本项目Redis和Mysql安装使用docker方式.
 
 结果,总共抓取了58,097 篇文章, 可在多台机器同时开启爬虫,分布式抓取。
 
@@ -29,6 +34,7 @@ go get -u -v github.com/hunterhug/jiandan
   "detail_spider_num": 30, // 详情页爬虫并发数
   "index_spider_num": 3, // 列表页爬虫并发数
   "time_out": 15,  // html获取超时时间
+  "wait_time": 2, // 每只爬虫暂停时间
   "redis": {   // redis设置
     "Host": "127.0.0.1:6379",
     "Password": "GoSpider", // 密码为空留空,本项目docker环境密码为GoSpider
@@ -64,14 +70,13 @@ go run main.go
 
 ```
 ./install.sh 
-# 之后执行相应的二进制
-# Window用户这样:jiandan_windows_amd64.exe 
-./jiandan_linux_amd64
 ```
+
+之后执行相应的二进制, Window用户这样执行`jiandan_windows_amd64.exe`
 
 ![](doc/jiandan/xx.png)
 
-3.数据保存在data文件夹和数据库中,重抓要删除Redis(如何删除请百度)数据库和文件夹(全部)
+3.数据保存在data文件夹和数据库中,重抓要删除Redis(`docker exec -d GoSpider-redis redis-cli -a GoSpider flushall`)和文件夹(全部)
 
 如果只是接力,即是增量抓取,那么不需要删redis并且文件夹`data/detail`可不删,其他文件(重点)要删。
 
@@ -98,8 +103,6 @@ go run main.go
 go run main.go -config=/home/config.json -clear=1
 ```
 
-详细说明见[http://www.lenggirl.com/spider/jiandan.html](http://www.lenggirl.com/spider/jiandan.html),代码改了一部分了..
-
 ## 支持大兄弟
 
 如果你觉得项目帮助到你,欢迎请我喝杯咖啡
@@ -110,7 +113,6 @@ go run main.go -config=/home/config.json -clear=1
 支付宝
 ![支付宝](https://raw.githubusercontent.com/hunterhug/hunterhug.github.io/master/static/jpg/ali.png)
 
-欢迎加入 [爬虫群](https://segmentfault.com/g/1570000010693834)
 
 # License
 

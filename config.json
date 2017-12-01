@@ -4,6 +4,7 @@
   "detail_spider_num": 30,
   "index_spider_num": 3,
   "time_out": 15,
+  "wait_time": 2,
   "redis": {
     "Host": "127.0.0.1:6379",
     "Password": "GoSpider",
