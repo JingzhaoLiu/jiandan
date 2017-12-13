@@ -9,7 +9,7 @@ sudo cp my.cnf $HOME/mydocker/mysql/conf/my.cnf
 sudo cp redis.conf $HOME/mydocker/redis/conf/redis.conf
 #sudo mkdir -p $HOME/mydocker/go/src/github.com/hunterhug
 #cd $HOME/mydocker/go/src/github.com/hunterhug
-#sudo git clone https://github.com/hunterhug/GoSpider
+#sudo git clone https://github.com/hunterhug/marmot
 #cd -
 sudo docker stop GoSpider-mysqldb
 sudo docker stop GoSpider-redis

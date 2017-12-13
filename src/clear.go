@@ -12,12 +12,12 @@ limitations under the License
 */
 package src
 
-import "github.com/hunterhug/GoSpider/spider"
+import "github.com/hunterhug/marmot/miner"
 
 // 将Doing移到Todo
 func Clear() {
 	for {
 		s, _ := RedisClient.Brpoplpush(RedisListDoing, RedisListTodo, 0)
-		spider.Log().Info("movw :" + s)
+		miner.Log().Info("movw :" + s)
 	}
 }

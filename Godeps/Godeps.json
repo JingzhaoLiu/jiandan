@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/hunterhug/jiandan",
-	"GoVersion": "go1.8",
+	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
 	"Deps": [
 		{
@@ -18,30 +18,28 @@
 			"Rev": "7ebe0a500653eeb1859664bed5e48dec1e164e73"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoSpider/query",
-			"Comment": "v2.1",
-			"Rev": "417db0048b4273e235ac5312a1487300b97679b4"
+			"ImportPath": "github.com/hunterhug/marmot/expert",
+			"Rev": "be10de64abcbaa7d701855604e233da4444f45f2"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoSpider/spider",
-			"Comment": "v2.1",
-			"Rev": "417db0048b4273e235ac5312a1487300b97679b4"
+			"ImportPath": "github.com/hunterhug/marmot/miner",
+			"Rev": "be10de64abcbaa7d701855604e233da4444f45f2"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoTool/store",
-			"Rev": "b2c5d6aa7010e2d8a558d652d6d18b1fc49f284e"
+			"ImportPath": "github.com/hunterhug/parrot/store",
+			"Rev": "2a0327ecdc18146947f7245d1e12979805056d01"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoTool/store/myredis",
-			"Rev": "b2c5d6aa7010e2d8a558d652d6d18b1fc49f284e"
+			"ImportPath": "github.com/hunterhug/parrot/store/myredis",
+			"Rev": "2a0327ecdc18146947f7245d1e12979805056d01"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoTool/store/mysql",
-			"Rev": "b2c5d6aa7010e2d8a558d652d6d18b1fc49f284e"
+			"ImportPath": "github.com/hunterhug/parrot/store/mysql",
+			"Rev": "2a0327ecdc18146947f7245d1e12979805056d01"
 		},
 		{
-			"ImportPath": "github.com/hunterhug/GoTool/util",
-			"Rev": "b2c5d6aa7010e2d8a558d652d6d18b1fc49f284e"
+			"ImportPath": "github.com/hunterhug/parrot/util",
+			"Rev": "2a0327ecdc18146947f7245d1e12979805056d01"
 		},
 		{
 			"ImportPath": "github.com/op/go-logging",
@@ -54,6 +52,10 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/html/atom",
+			"Rev": "c73622c77280266305273cb545f54516ced95b93"
+		},
+		{
+			"ImportPath": "golang.org/x/net/proxy",
 			"Rev": "c73622c77280266305273cb545f54516ced95b93"
 		},
 		{

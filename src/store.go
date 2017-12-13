@@ -13,24 +13,24 @@ limitations under the License
 package src
 
 import (
-	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoTool/store/myredis"
-	"github.com/hunterhug/GoTool/store/mysql"
-	"github.com/hunterhug/GoTool/util"
+	"github.com/hunterhug/marmot/miner"
+	"github.com/hunterhug/parrot/store/myredis"
+	"github.com/hunterhug/parrot/store/mysql"
+	"github.com/hunterhug/parrot/util"
 )
 
 func InitDB() {
 	// 新建Redis池，方便爬虫们插和抽！！
 	client, err := myredis.NewRedisPool(RedisConfig, DetailSpiderNum+IndexSpiderNum+2)
 	if err != nil {
-		spider.Log().Error(err.Error())
+		miner.Log().Error(err.Error())
 	}
 	RedisClient = client
 
 	// 新建数据库
 	e := MysqlConfig.CreateDb()
 	if e != nil {
-		spider.Log().Error(e.Error())
+		miner.Log().Error(e.Error())
 	}
 	// a new db connection
 	MysqlClient = mysql.New(MysqlConfig)
@@ -53,7 +53,7 @@ func InitDB() {
 	// create
 	_, err = MysqlClient.Create(sql)
 	if err != nil {
-		spider.Log().Error(err.Error())
+		miner.Log().Error(err.Error())
 	}
 
 }
@@ -68,7 +68,7 @@ func SentRedis(urls []string) {
 	}
 	_, e := RedisClient.Lpush(RedisListTodo, interfaceSlice...)
 	if e != nil {
-		spider.Log().Errorf("sent redis error:%s", e.Error())
+		miner.Log().Errorf("sent redis error:%s", e.Error())
 	}
 }
 
@@ -78,6 +78,6 @@ func SaveToMysql(url string, m map[string]string) {
 	}
 	_, e := MysqlClient.Insert("INSERT INTO `jiandan`.`pages`(`id`,`url`,`title`,`shortcontent`,`tags`,`content`)VALUES(?,?,?,?,?,?)", util.Md5(url), url, m["title"], m["shortcontent"], m["tags"], m["content"])
 	if e != nil {
-		spider.Log().Error("save mysql error:" + e.Error())
+		miner.Log().Error("save mysql error:" + e.Error())
 	}
 }

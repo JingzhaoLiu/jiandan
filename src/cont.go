@@ -18,10 +18,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoTool/store/myredis"
-	"github.com/hunterhug/GoTool/store/mysql"
-	"github.com/hunterhug/GoTool/util"
+	"github.com/hunterhug/marmot/miner"
+	"github.com/hunterhug/parrot/store/myredis"
+	"github.com/hunterhug/parrot/store/mysql"
+	"github.com/hunterhug/parrot/util"
 )
 
 // 可抽离到配置文件中
@@ -105,33 +105,33 @@ func Config(file string) {
 
 	e = util.MakeDir(filepath.Join(RootDir, "data", "detail"))
 	if e != nil {
-		spider.Log().Panic(e.Error())
+		miner.Log().Panic(e.Error())
 	}
 	if xx.TimeOut == 0 {
 		xx.TimeOut = TimeOut
 	}
-	spider.SetGlobalTimeout(xx.TimeOut)
-	spider.SetLogLevel(LogLevel)
+	miner.SetGlobalTimeout(xx.TimeOut)
+	miner.SetLogLevel(LogLevel)
 	indexstopchan = make(chan bool, 1)
 
 	// 初始化爬虫们，一种多爬虫方式，设置到全局MAP中
 	for i := 0; i <= IndexSpiderNum; i++ {
-		s, e := spider.New(nil)
+		s, e := miner.New(nil)
 		if e != nil {
-			spider.Log().Panicf("index spider %d new error: %s", i, e.Error())
+			miner.Log().Panicf("index miner %d new error: %s", i, e.Error())
 		}
 		// 设置随机UA
-		s.SetUa(spider.RandomUa())
+		s.SetUa(miner.RandomUa())
 		s.SetWaitTime(xx.Wait) // 这里暂停方便
-		spider.Pool.Set(fmt.Sprintf("%s-%d", IndexSpiderNamePrefix, i), s)
+		miner.Pool.Set(fmt.Sprintf("%s-%d", IndexSpiderNamePrefix, i), s)
 	}
 	for i := 0; i <= DetailSpiderNum; i++ {
-		s, e := spider.New(nil)
+		s, e := miner.New(nil)
 		if e != nil {
-			spider.Log().Panicf("detail spider %d new error: %s", i, e.Error())
+			miner.Log().Panicf("detail miner %d new error: %s", i, e.Error())
 		}
-		s.SetUa(spider.RandomUa())
+		s.SetUa(miner.RandomUa())
 		s.SetWaitTime(xx.Wait)
-		spider.Pool.Set(fmt.Sprintf("%s-%d", DetailSpiderNamePrefix, i), s)
+		miner.Pool.Set(fmt.Sprintf("%s-%d", DetailSpiderNamePrefix, i), s)
 	}
 }

@@ -14,8 +14,9 @@ package src
 
 import (
 	"fmt"
-	"github.com/hunterhug/GoTool/util"
 	"path/filepath"
+
+	"github.com/hunterhug/parrot/util"
 	//"strings"
 	"testing"
 )

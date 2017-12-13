@@ -11,7 +11,7 @@
 
 多浏览器持久化cookie分布式爬虫爬取数据,使用到redis,mysql,将网页数据保存在磁盘中,详情页解析后存入数据库。
 
-爬虫工程师进阶必备!高级示例！依赖核心库：[土拔鼠Golang爬虫包](https://github.com/hunterhug/GoSpider)
+爬虫工程师进阶必备!高级示例！依赖核心库：[土拔鼠Golang爬虫包](https://github.com/hunterhug/marmot)
 
 本项目Redis和Mysql安装使用docker方式.
 

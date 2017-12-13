@@ -16,19 +16,19 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoTool/util"
+	"github.com/hunterhug/marmot/miner"
+	"github.com/hunterhug/parrot/util"
 )
 
 var (
 	// 信号量
 	indexstopchan chan bool
 	maxpage       = 100000 // 预估的最大页数的两倍
-	pageSpider    *spider.Spider
+	pageSpider    *miner.Worker
 )
 
 func init() {
-	pageSpider, _ = spider.New(nil) // 预估页数的爬虫
+	pageSpider, _ = miner.New(nil) // 预估页数的爬虫
 }
 
 // 首页启动入口，包括所有非详情页面的抓取
@@ -42,37 +42,37 @@ func IndexSpiderRun() {
 
 // 步骤1：首页随便取只爬虫抓取
 func IndexStep() {
-	s, ok := spider.Pool.Get(IndexSpiderNamePrefix + "-0")
+	s, ok := miner.Pool.Get(IndexSpiderNamePrefix + "-0")
 	if !ok {
-		spider.Log().Panic("IndexStep:Get Index Spider error!")
+		miner.Log().Panic("IndexStep:Get Index Spider error!")
 	}
 	// 爬取首页
 	s.SetUrl(Url).SetMethod("get")
 	data, e := s.Go()
 	if e != nil {
 		// 错误直接退出
-		spider.Log().Panicf("Get Index Error:%s", e.Error())
+		miner.Log().Panicf("Get Index Error:%s", e.Error())
 	}
 
-	spider.Log().Info("Catch Index!")
+	miner.Log().Info("Catch Index!")
 
 	// 实验的
 	indexfile := filepath.Join(RootDir, "data", "index.html")
 	e = util.SaveToFile(indexfile, data)
 	if e != nil {
-		spider.Log().Errorf("Save Index Error:%s", e.Error())
+		miner.Log().Errorf("Save Index Error:%s", e.Error())
 	}
 
 	// 获取页数
 	// e = ParseIndexNum(data)
 	// if e != nil {
-	// 	spider.Log().Panic(e.Error())
+	// 	miner.Log().Panic(e.Error())
 	// }
 	pagefirst := 1      // 1
 	pagelast := maxpage // 100
 	for {
 		pagenow := (pagefirst + pagelast) / 2 // 50  1-50 50-100
-		spider.Log().Info(pagefirst, pagenow, pagelast)
+		miner.Log().Info(pagefirst, pagenow, pagelast)
 		if pagenow == pagefirst {
 			break
 		}
@@ -80,7 +80,7 @@ func IndexStep() {
 		pageSpider.SetUrl(fmt.Sprintf("%s/page/%d", Url, pagenow))
 		result, e := pageSpider.Get()
 		if e != nil {
-			spider.Log().Panic(e.Error())
+			miner.Log().Panic(e.Error())
 		}
 
 		if len(ParseIndex(result)) == 0 {
@@ -90,7 +90,7 @@ func IndexStep() {
 		}
 	}
 
-	spider.Log().Info(pagefirst)
+	miner.Log().Info(pagefirst)
 	// os.Exit(1)
 	IndexPage = pagefirst
 
@@ -106,7 +106,7 @@ func PagesStep() {
 	// 分配任务
 	tasks, e := util.DevideStringList(urllist, IndexSpiderNum)
 	if e != nil {
-		spider.Log().Panic(e.Error())
+		miner.Log().Panic(e.Error())
 	}
 	// 任务开始
 	for i, task := range tasks {
@@ -115,7 +115,7 @@ func PagesStep() {
 	for i, _ := range tasks {
 		// 等待爬虫结束
 		<-indexstopchan
-		spider.Log().Infof("index spider %s-%d finish", IndexSpiderNamePrefix, i)
+		miner.Log().Infof("index miner %s-%d finish", IndexSpiderNamePrefix, i)
 	}
 }
 
@@ -125,9 +125,9 @@ func PagesTaskGoStep(name int, task []string) {
 	var data []byte
 	// 获取池中爬虫
 	spidername := fmt.Sprintf("%s-%d", IndexSpiderNamePrefix, name)
-	s, ok := spider.Pool.Get(spidername)
+	s, ok := miner.Pool.Get(spidername)
 	if !ok {
-		spider.Log().Panicf("Pool Spider %s not get", spidername)
+		miner.Log().Panicf("Pool Spider %s not get", spidername)
 	}
 Outloop:
 	for _, url := range task {
@@ -135,10 +135,10 @@ Outloop:
 		pagename := fmt.Sprintf("%s.html", util.ValidFileName(url))
 		savepath := filepath.Join(RootDir, "data", pagename)
 		if util.FileExist(savepath) {
-			spider.Log().Infof("page %s Exist", pagename)
+			miner.Log().Infof("page %s Exist", pagename)
 			data, e = util.ReadfromFile(savepath)
 			if e != nil {
-				spider.Log().Errorf("take data from exist file error:%s", e.Error())
+				miner.Log().Errorf("take data from exist file error:%s", e.Error())
 			} else {
 				SentRedis(ParseIndex(data))
 			}
@@ -153,21 +153,21 @@ Outloop:
 			}
 			data, e = s.Go()
 			if e != nil {
-				spider.Log().Errorf("%s: index page %s fetch error:%s,remain %d times", spidername, url, e.Error(), retrynum)
+				miner.Log().Errorf("%s: index page %s fetch error:%s,remain %d times", spidername, url, e.Error(), retrynum)
 				retrynum = retrynum - 1
 				continue
 			}
 			SentRedis(ParseIndex(data))
-			spider.Log().Infof("%s:index page %s fetch!", spidername, url)
+			miner.Log().Infof("%s:index page %s fetch!", spidername, url)
 			break
 		}
 
 		// 保存文件
 		e = util.SaveToFile(savepath, data)
 		if e != nil {
-			spider.Log().Errorf("Save page %s Fail:%s", pagename, e.Error())
+			miner.Log().Errorf("Save page %s Fail:%s", pagename, e.Error())
 		}
-		spider.Log().Infof("Save page %s Done", pagename)
+		miner.Log().Infof("Save page %s Done", pagename)
 	}
 
 	indexstopchan <- true

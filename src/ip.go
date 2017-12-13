@@ -3,18 +3,18 @@ package src
 import (
 	"fmt"
 
-	"github.com/hunterhug/GoSpider/spider"
+	"github.com/hunterhug/marmot/miner"
 )
 
 func GetIP() string {
-	spider.Logger.Debug("Get IP...")
+	miner.Logger.Debug("Get IP...")
 	iptemp, ierr := RedisClient.Brpop(0, IpPool)
 	// ip null return,maybe forever not happen
 	if ierr != nil {
 		panic("ip:" + ierr.Error())
 	}
 	ip := iptemp[1]
-	spider.Logger.Debug("Get IP done:" + ip)
+	miner.Logger.Debug("Get IP done:" + ip)
 	return ip
 }
 

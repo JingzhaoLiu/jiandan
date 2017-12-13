@@ -19,14 +19,14 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/hunterhug/GoSpider/query"
-	"github.com/hunterhug/GoTool/util"
+	"github.com/hunterhug/marmot/expert"
+	"github.com/hunterhug/parrot/util"
 )
 
 // 解析页面数量
 // 此策略已经更改, 弃用!!!
 func ParseIndexNum(data []byte) error {
-	doc, e := query.QueryBytes(data)
+	doc, e := expert.QueryBytes(data)
 	if e != nil {
 		return e
 	}
@@ -51,7 +51,7 @@ func ParseIndex(data []byte) []string {
 		os.Exit(1)
 	}
 	list := []string{}
-	doc, e := query.QueryBytes(data)
+	doc, e := expert.QueryBytes(data)
 	if e != nil {
 		return list
 	}
@@ -79,7 +79,7 @@ func ParseDetail(data []byte) map[string]string {
 	returnmap := map[string]string{
 		"title": "", "tags": "", "content": "", "shortcontent": "",
 	}
-	doc, e := query.QueryBytes(data)
+	doc, e := expert.QueryBytes(data)
 	if e != nil {
 		return returnmap
 	}

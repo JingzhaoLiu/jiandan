@@ -14,9 +14,10 @@ package src
 
 import (
 	"fmt"
-	"github.com/hunterhug/GoSpider/spider"
-	"github.com/hunterhug/GoTool/util"
 	"path/filepath"
+
+	"github.com/hunterhug/marmot/miner"
+	"github.com/hunterhug/parrot/util"
 )
 
 // 详情页爬虫
@@ -29,16 +30,16 @@ func DetailSpidersRun() {
 func DetailTaskStep(name int) {
 	spidername := fmt.Sprintf("%s-%d", DetailSpiderNamePrefix, name)
 	detailpath := filepath.Join(RootDir, "data", "detail")
-	s, ok := spider.Pool.Get(spidername)
+	s, ok := miner.Pool.Get(spidername)
 	if !ok {
-		spider.Log().Panicf("Pool Spider %s not get", spidername)
+		miner.Log().Panicf("Pool Spider %s not get", spidername)
 	}
 
 	for {
 		// 将Todo移到Doing
 		url, e := RedisClient.Brpoplpush(RedisListTodo, RedisListDoing, 0)
 		if e != nil {
-			spider.Log().Errorf("BrpopLpush %s error:%s", url, e.Error())
+			miner.Log().Errorf("BrpopLpush %s error:%s", url, e.Error())
 			break
 		}
 		// Done已经存在
@@ -51,13 +52,13 @@ func DetailTaskStep(name int) {
 		// 文件存在不抓！
 		filename := filepath.Join(detailpath, util.ValidFileName(url))
 		if util.FileExist(filename) {
-			spider.Log().Infof("file:%s exist", filename)
+			miner.Log().Infof("file:%s exist", filename)
 			// 删除Doing!
 			RedisClient.Lrem(RedisListDoing, 0, url)
 			// 读取后解析存储
 			data, e := util.ReadfromFile(filename)
 			if e != nil {
-				spider.Log().Errorf("take from file %s error: %s", filename, e.Error())
+				miner.Log().Errorf("take from file %s error: %s", filename, e.Error())
 			} else {
 				SaveToMysql(url, ParseDetail(data))
 			}
@@ -72,14 +73,14 @@ func DetailTaskStep(name int) {
 			}
 			data, e := s.Go()
 			if e != nil {
-				spider.Log().Errorf("%s:detail url %s catch error:%s remian %d times", spidername, url, e.Error(), retrynum)
+				miner.Log().Errorf("%s:detail url %s catch error:%s remian %d times", spidername, url, e.Error(), retrynum)
 				retrynum = retrynum - 1
 				continue
 			} else {
-				spider.Log().Infof("catch url:%s", url)
+				miner.Log().Infof("catch url:%s", url)
 				e := util.SaveToFile(filename, data)
 				if e != nil {
-					spider.Log().Errorf("file %s save error:%s", filename, e.Error())
+					miner.Log().Errorf("file %s save error:%s", filename, e.Error())
 				}
 
 				SaveToMysql(url, ParseDetail(data))

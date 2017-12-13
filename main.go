@@ -18,7 +18,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/hunterhug/GoTool/util"
+	"github.com/hunterhug/parrot/util"
 	jiandan "github.com/hunterhug/jiandan/src"
 )
 
